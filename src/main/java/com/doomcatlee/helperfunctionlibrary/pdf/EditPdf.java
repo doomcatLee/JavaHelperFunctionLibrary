@@ -7,24 +7,32 @@ import java.io.File;
 
 public class EditPdf {
 
-    // Requires fillable PDF
-    public void editPdf() {
-        File pdfFile = new File("test.pdf");
+    /**
+     *
+     *  Given file path for PDF, loop through all fillable fields.
+     *  Grab by pdf field name and set field
+     *
+     * **/
+    public void editPdf(String filePath) {
+        File pdfFile = new File(filePath);
 
         try (PDDocument doc = PDDocument.load(pdfFile)) {
             PDAcroForm pDAcroForm = doc.getDocumentCatalog().getAcroForm();
 
-            pDAcroForm.getFields().get(0).setValue("firstField");
-            pDAcroForm.getFields().get(1).setValue("secondField");
+            pDAcroForm.getFields().get(0).setValue("firstField"); // Text fields
+            pDAcroForm.getFields().get(1).setValue("secondField"); // Text fields
 
-            //Flatten the document
+            pDAcroForm.getFields().get(2).setValue("Yes"); // Check boxes
+            pDAcroForm.getFields().get(3).setValue("Off"); // Check boxes
+
+            // Flatten the document
             pDAcroForm.flatten();
 
-            // Save the file locally and call it back
+            // Save file
             doc.save("result.pdf");
 
         } catch (Exception ex) {
-            System.err.print(ex);
+            ex.printStackTrace();
         }
     }
 }

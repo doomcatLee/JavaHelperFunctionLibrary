@@ -16,9 +16,11 @@ import com.lowagie.text.pdf.PdfWriter;
 
 @Component
 public class MergePdf {
+
     /**
      *
-     * Given filePath of all PDFs, merge them into one PDF doc.
+     *  Merges multiple PDF files into one PDF.
+     *  Given filePath string of all PDFs, merge them into one PDF doc.
      *
      * **/
     public void mergePDFDocuments(ArrayList<String> fileNamesToMerge) {

@@ -12,11 +12,13 @@ import java.net.URL;
 public class ImageComponent {
 
     /**
+     *
      *  Given url web link, download as jpg file
      *
      *  Arguments:
      *      1. imageUrl = url for the link
      *      2. destinationFile = url of your output
+     *
      * **/
     public void saveImage(String imageUrl, String destinationFile) throws IOException {
         URL url = new URL(imageUrl);
