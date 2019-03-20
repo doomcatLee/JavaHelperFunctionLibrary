@@ -1,5 +1,7 @@
 package com.doomcatlee.helperfunctionlibrary.pdf;
 
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -14,47 +16,40 @@ import com.lowagie.text.pdf.PdfWriter;
 
 @Component
 public class MergePdf {
+    /**
+     *
+     * Given filePath of all PDFs, merge them into one PDF doc.
+     *
+     * **/
+    public void mergePDFDocuments(ArrayList<String> fileNamesToMerge) {
+        // Instantiating PDFMergerUtility class
+        PDFMergerUtility PDFmerger = new PDFMergerUtility();
+        String outputURI = "/test/someDirectory/";
 
-    void doMerge(List<InputStream> list, OutputStream outputStream) throws DocumentException, IOException {
-        Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, outputStream);
-        document.open();
-        PdfContentByte cb = writer.getDirectContent();
+        // Setting the destination file
+        PDFmerger.setDestinationFileName(outputURI + "test.pdf"); // server
 
-        for (InputStream in : list) {
-            PdfReader reader = new PdfReader(in);
-            for (int i = 1; i <= reader.getNumberOfPages(); i++) {
-                document.newPage();
-                //import the page from source pdf
-                PdfImportedPage page = writer.getImportedPage(reader, i);
-                //add the page to the destination pdf
-                cb.addTemplate(page, 0, 0);
-            }
+        for (String fileName : fileNamesToMerge) {
+            // Loading an existing PDF document
+            try {
+                File file = new File(fileName);
+                PDDocument doc = PDDocument.load(file);
+
+                // adding the source files
+                PDFmerger.addSource(file);
+
+                // Closing the documents
+                doc.close();
+
+            } catch (Exception ex) {ex.printStackTrace();}
         }
 
-        outputStream.flush();
-        document.close();
-        outputStream.close();
-    }
-
-    // Saves merged PDF documents
-    public void mergePdfFiles(List<String> files, String dealNumber) {
-        List<InputStream> list = new ArrayList<InputStream>();
+        // Merging the two documents
         try {
-
-            // Source pdfs
-            for (String file : files) {
-                list.add(new FileInputStream(new File(file)));
-            }
-
-            // Resulting pdf
-            OutputStream out = new FileOutputStream(new File(dealNumber + ".pdf"));
-
-            doMerge(list, out);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            PDFmerger.mergeDocuments();
+            System.out.println("Documents merged");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
-
 }
